@@ -92,3 +92,49 @@ Widget passwordFormAuth({
     ),
   );
 }
+
+Widget dateFormField({
+  required String labelText,
+  required IconData icon,
+  required TextEditingController controller,
+  required BuildContext context,
+  FormFieldValidator<String>? validator,
+  DateTime? initialDate,
+}) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    child: TextFormField(
+      controller: controller,
+      readOnly: true,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: fxPrimaryColor)
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        fillColor: fxPrimaryColor.withOpacity(0.04),
+        hintStyle: secondaryTextStyle(),
+      ),
+      onTap: () async {
+        DateTime now = DateTime.now();
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: initialDate ?? DateTime(now.year - 18), // Default: 18 years ago
+          firstDate: DateTime(1900),
+          lastDate: now,
+        );
+
+        if (pickedDate != null) {
+          controller.text = "${pickedDate.toLocal()}".split(' ')[0]; // YYYY-MM-DD
+        }
+      },
+    ),
+  );
+}
