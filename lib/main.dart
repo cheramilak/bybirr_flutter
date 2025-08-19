@@ -1,5 +1,6 @@
 import 'package:bybirr_flutter/core/app_theme.dart';
 import 'package:bybirr_flutter/page/auth/login_screan.dart';
+import 'package:bybirr_flutter/page/blog/blog_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_provider.dart';
 import 'package:bybirr_flutter/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ class _MyAppState extends State<MyApp> {
           }),
            ChangeNotifierProvider(create: (_){
            return DashboardProvider();
+          }),
+          ChangeNotifierProvider(create: (_){
+           return BlogProvider();
           }),
         ],
         builder: (context, snapshot) {

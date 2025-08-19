@@ -91,7 +91,7 @@ class _SignupScreanState extends State<SignupScrean> {
                           TextStyle(color: white, fontWeight: FontWeight.bold),
                     ),
                   ).onTap(() async {
-                    DashboardScreen().launch(context);
+                    DashboardScreen().launch(context,isNewTask: true);
                   }),
             10.height,
             const SizedBox(height: 20),
