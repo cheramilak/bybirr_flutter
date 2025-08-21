@@ -35,37 +35,23 @@ class _SplashScreenState extends State<SplashScreen> {
     //   }
     // });
 
-    await UserData().getisNewInstall().then((value) {
-      if (value) {
-        //GoRouter.of(context).pushNamed(AppRouteContstant.onBordingPage);
-        return IntroductionScreen().launch(context, isNewTask: true);
-      }
-    });
-
     await DioClient().getAuthToken().then((e) {
       if (e.isEmpty) {
         // Make sure the widget is still mounted before navigating
 
-        return LoginScrean().launch(context, isNewTask: true);
+        return IntroductionScreen().launch(context, isNewTask: true);
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          ).getUserProfile().then((e) {
+            if (e) {
+              return DashboardScreen().launch(context, isNewTask: true);
+            }
+          });
+        });
       }
-      // else {
-      //   WidgetsBinding.instance.addPostFrameCallback((_) {
-      //     Provider.of<AuthProvider>(context, listen: false)
-      //         .getUserProfile()
-      //         .then((e) {
-      //       e.fold((l) {
-      //         if (l == 401) {
-      //           DioClient().deltetAuthToken();
-      //           LoginScrean().launch(context, isNewTask: true);
-      //         }
-      //       }, (r) {
-      //         if (r != null) {
-      //           DashboardScreen().launch(context,isNewTask: true);
-      //         }
-      //       });
-      //     });
-      //   });
-      // }
     });
   }
 

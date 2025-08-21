@@ -1,3 +1,8 @@
+import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
+import 'package:bybirr_flutter/page/home/widgets/card_list_bootomsheet.dart';
+import 'package:bybirr_flutter/page/home/widgets/card_widget.dart';
+import 'package:bybirr_flutter/page/kyc/kyc_screen.dart';
+import 'package:bybirr_flutter/page/kyc/widgets/kyc_conformation.dart';
 import 'package:bybirr_flutter/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -18,6 +23,7 @@ class _HomeScreanState extends State<HomeScrean> {
     final colorScheme = theme.colorScheme;
     final size = MediaQuery.of(context).size;
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return SafeArea(
       child: Scaffold(
         // appBar: AppBar(),
@@ -40,108 +46,143 @@ class _HomeScreanState extends State<HomeScrean> {
                 }),
               ),
               10.height,
+              CardWidget(size: size, colorScheme: colorScheme, theme: theme),
               Container(
-                height: size.height * 0.2,
                 width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: colorScheme.surfaceBright,
-                  border: Border.all(width: 0.5),
+                  border: Border.all(width: 0.5, color: greenColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('\$2,433', style: theme.textTheme.headlineLarge),
-                        15.width,
-                        Icon(Icons.visibility).paddingRight(10),
-                      ],
+                    CircleAvatar(
+                      child: Icon(Icons.warning_outlined, color: redColor),
                     ),
-                    Expanded(
-                      child: SizedBox(
-                        child: Align(
-                          alignment: AlignmentGeometry.centerRight,
-                          child: Icon(Icons.wifi),
+                    15.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Complete your verfication',
+                          style: theme.textTheme.bodySmall,
                         ),
-                      ),
-                    ),
-                    Text(
-                      '1038 3498 34764 4743',
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                    10.height,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('23/25', style: theme.textTheme.bodySmall),
-                        Icon(Icons.card_membership).paddingRight(10),
+                        if (authProvider.userModel!.kycModel != null)
+                          authProvider.userModel!.kycModel!.status == 'Approved'
+                              ? Row(
+                                  children: [
+                                    Icon(
+                                      Icons.verified,
+                                      color: greenColor,
+                                      size: 15,
+                                    ),
+                                    8.width,
+                                    Text(
+                                      "verfied",
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(color: greenColor),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  "${authProvider.userModel!.kycModel!.status},${authProvider.userModel!.kycModel!.reason ?? ''}",
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.error,
+                                  ),
+                                ),
                       ],
                     ),
                   ],
                 ),
-              ),
+              ).onTap(() {
+                if (authProvider.getUser!.kycModel != null &&
+                    authProvider.getUser!.kycModel!.status == 'Pending') {
+                  return showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return KycConformationDialog();
+                    },
+                  );
+                }
+                if (authProvider.getUser!.kycModel!.status == 'Failed') {
+                  KycScreen().launch(context);
+                }
+              }),
               10.height,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: colorScheme.surfaceBright,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(radius: 20),
-                        3.height,
-                        Text('Deposit', style: theme.textTheme.bodyLarge),
+                        CircleAvatar(radius: 13),
+                        10.height,
+                        Text('My card', style: theme.textTheme.labelMedium),
+                      ],
+                    ),
+                  ).onTap(() {
+                    return showModalBottomSheet(
+                      showDragHandle: true,
+                      enableDrag: true,
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return CardListBootomsheet(
+                          kycModel: authProvider.getUser!.kycModel,
+                        );
+                      },
+                    );
+                  }),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: colorScheme.surfaceBright,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(radius: 13),
+                        10.height,
+                        Text('Deposit', style: theme.textTheme.labelMedium),
                       ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: colorScheme.surfaceBright,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(radius: 20),
-                        3.height,
-                        Text('Deposit', style: theme.textTheme.bodyLarge),
+                        CircleAvatar(radius: 13),
+                        10.height,
+                        Text('Deposit', style: theme.textTheme.labelMedium),
                       ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: colorScheme.surfaceBright,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(radius: 20),
-                        3.height,
-                        Text('Deposit', style: theme.textTheme.bodyLarge),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: colorScheme.surfaceBright,
-                    ),
-                    child: Column(
-                      children: [
-                        CircleAvatar(radius: 20),
-                        3.height,
-                        Text('Deposit', style: theme.textTheme.bodyLarge),
+                        CircleAvatar(radius: 13),
+                        10.height,
+                        Text('Deposit', style: theme.textTheme.labelMedium),
                       ],
                     ),
                   ),
@@ -170,10 +211,10 @@ class _HomeScreanState extends State<HomeScrean> {
                     return Container(
                       margin: EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: colorScheme.surfaceBright,
-                      border: Border.all(width: 0.3)
-                    ),
+                        borderRadius: BorderRadius.circular(8),
+                        color: colorScheme.surfaceBright,
+                        border: Border.all(width: 0.3),
+                      ),
                       child: ListTile(
                         leading: CircleAvatar(),
                         title: Text('Title', style: theme.textTheme.bodyLarge),

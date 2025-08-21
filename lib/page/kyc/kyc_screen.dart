@@ -1,3 +1,5 @@
+import 'package:bybirr_flutter/models/kyc.dart';
+import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_provider.dart';
 import 'package:bybirr_flutter/page/kyc/widgets/address_form.dart';
 import 'package:bybirr_flutter/page/kyc/widgets/id_form.dart';
@@ -17,7 +19,15 @@ class _KycScreenState extends State<KycScreen> {
   @override
   void initState() {
     super.initState();
-    
+    init();
+  }
+
+  init() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<KycProvider>(context, listen: false).initData(
+        Provider.of<AuthProvider>(context, listen: false).getUser!.kycModel,
+      );
+    });
   }
 
   @override
@@ -31,8 +41,7 @@ class _KycScreenState extends State<KycScreen> {
         title: Container(
           width: size.width * 0.7,
           child: LinearProgressIndicator(
-            value: (kycProvider.getIndex + 1) /
-                kycProvider.getColorList.length,
+            value: (kycProvider.getIndex + 1) / 3,
             backgroundColor: theme.dividerColor,
             valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
             minHeight: 13,
@@ -41,27 +50,22 @@ class _KycScreenState extends State<KycScreen> {
         ),
       ),
       body: PageView.builder(
-          controller: kycProvider.getController,
-          physics: kycProvider.getScrollPhysics(),
-          onPageChanged: (value) {
-            kycProvider.setIndex = value;
-          },
-          itemCount: 3,
-          itemBuilder: (context, index) {
-          if(index == 0)
-          {
-            return  NameForm();
+        controller: kycProvider.getController,
+        physics: NeverScrollableScrollPhysics(),
+        onPageChanged: (value) {
+          kycProvider.setIndex = value;
+        },
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return NameForm();
           }
-          if(index == 1)
-          {
-            return  AddressForm();
+          if (index == 1) {
+            return AddressForm();
           }
-          if(index == 2)
-          {
-            return  IdForm();
-          }
-          return  NameForm();
-          }),
+          return IdForm();
+        },
+      ),
     );
   }
 }

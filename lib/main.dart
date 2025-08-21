@@ -36,52 +36,67 @@ class _MyAppState extends State<MyApp> {
   }
 
   init() async {
-    themeProvider.setDarkMode =  themeProvider.getIsDarkMode;
-    
+    themeProvider.setDarkMode = themeProvider.getIsDarkMode;
   }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_){
-           return themeProvider;
-          }),
-           ChangeNotifierProvider(create: (_){
-           return DashboardProvider();
-          }),
-          ChangeNotifierProvider(create: (_){
-           return BlogProvider();
-          }),
-           ChangeNotifierProvider(create: (_){
-           return KycProvider();
-          }),
-          ChangeNotifierProvider(create: (_){
-           return AuthProvider();
-          }),
-          ChangeNotifierProvider(create: (_){
-           return IntroductionProvider();
-          }),
-        ],
-        builder: (context, snapshot) {
-          ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
-         
-          return MaterialApp(
-           
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            scaffoldMessengerKey: scaffoldMessengerKey,
-            theme: themeProvider.getIsDarkMode
-                ? AppTheme.dark.copyWith(
-                    appBarTheme: AppBarTheme(elevation: 3),
-                    textTheme: GoogleFonts.poppinsTextTheme(
-                        ThemeData.dark().textTheme),
-                  )
-                : AppTheme.light.copyWith(
-                    appBarTheme: AppBarTheme(elevation: 3),
-                    textTheme: GoogleFonts.poppinsTextTheme(
-                        ThemeData.light().textTheme)),
-           home: SplashScreen(),
-          );
-        });
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) {
+            return themeProvider;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return DashboardProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return BlogProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return KycProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return AuthProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return IntroductionProvider();
+          },
+        ),
+      ],
+      builder: (context, snapshot) {
+        ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          theme: themeProvider.getIsDarkMode
+              ? AppTheme.dark.copyWith(
+                  appBarTheme: AppBarTheme(elevation: 3),
+                  textTheme: GoogleFonts.poppinsTextTheme(
+                    ThemeData.dark().textTheme,
+                  ),
+                )
+              : AppTheme.light.copyWith(
+                  appBarTheme: AppBarTheme(elevation: 3),
+                  textTheme: GoogleFonts.poppinsTextTheme(
+                    ThemeData.light().textTheme,
+                  ),
+                ),
+          home: SplashScreen(),
+        );
+      },
+    );
   }
 }

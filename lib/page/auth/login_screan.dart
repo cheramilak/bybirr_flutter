@@ -1,9 +1,12 @@
+import 'package:bybirr_flutter/core/exception_message.dart';
+import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/auth/signup_screan.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
 import 'package:bybirr_flutter/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class LoginScrean extends StatefulWidget {
   const LoginScrean({super.key});
@@ -17,9 +20,10 @@ class _LoginScreanState extends State<LoginScrean> {
   TextEditingController passwordControoler = TextEditingController();
   @override
   Widget build(BuildContext context) {
-     final theme = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final colorScheme = theme.colorScheme;
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -27,10 +31,7 @@ class _LoginScreanState extends State<LoginScrean> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
-            const CircleAvatar(
-              radius: 50,
-              backgroundColor: blueColor,
-            ),
+            const CircleAvatar(radius: 50, backgroundColor: blueColor),
             const SizedBox(height: 20),
             const Text(
               'Log In',
@@ -54,16 +55,12 @@ class _LoginScreanState extends State<LoginScrean> {
               labelText: 'Password',
               hintText: 'Enter your password',
               isPasswordVisible: true,
-              onVisibilityToggle: () {
-                
-              },
+              onVisibilityToggle: () {},
             ),
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: () {
-                  
-                },
+                onTap: () {},
                 child: const Text(
                   'Forget password?',
                   style: TextStyle(
@@ -75,10 +72,13 @@ class _LoginScreanState extends State<LoginScrean> {
               ),
             ).paddingRight(10),
             const SizedBox(height: 13),
-            false
+            authProvider.getIsLoading
                 ? Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: greenColor, size: 30))
+                      color: greenColor,
+                      size: 30,
+                    ),
+                  )
                 : Container(
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     padding: const EdgeInsets.all(14),
@@ -89,11 +89,26 @@ class _LoginScreanState extends State<LoginScrean> {
                     alignment: Alignment.center,
                     child: const Text(
                       'Login',
-                      style:
-                          TextStyle(color: white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ).onTap(() async {
-                    DashboardScreen().launch(context,isNewTask: true);
+                    String? check = validateInputs(
+                      email: emailControoler.text.trim(),
+                      password: passwordControoler.text,
+                    );
+                    if (check != null) {
+                      return showErrorMessage(null, check);
+                    }
+                    bool res = await authProvider.Login(
+                      email: emailControoler.text.trim(),
+                      password: passwordControoler.text,
+                    );
+                    if (res) {
+                      DashboardScreen().launch(context, isNewTask: true);
+                    }
                   }),
             10.height,
             const SizedBox(height: 20),
@@ -110,7 +125,6 @@ class _LoginScreanState extends State<LoginScrean> {
                 textAlign: TextAlign.left,
               ),
             ),
-            
           ],
         ),
       ),
@@ -118,10 +132,7 @@ class _LoginScreanState extends State<LoginScrean> {
   }
 }
 
-String? validateInputs({
-  required String email,
-  required String password,
-}) {
+String? validateInputs({required String email, required String password}) {
   // Validate Name
 
   // Validate Email
@@ -134,8 +145,6 @@ String? validateInputs({
   // Validate Password
   if (password.isEmpty) {
     return 'Password cannot be empty';
-  } else if (password.length < 6) {
-    return 'Password must be at least 6 characters long';
   }
   return null;
 }

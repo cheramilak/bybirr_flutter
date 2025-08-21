@@ -1,9 +1,12 @@
+import 'package:bybirr_flutter/core/exception_message.dart';
 import 'package:bybirr_flutter/page/auth/login_screan.dart';
+import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
 import 'package:bybirr_flutter/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class SignupScrean extends StatefulWidget {
   const SignupScrean({super.key});
@@ -22,6 +25,7 @@ class _SignupScreanState extends State<SignupScrean> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final colorScheme = theme.colorScheme;
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -29,10 +33,7 @@ class _SignupScreanState extends State<SignupScrean> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
-            const CircleAvatar(
-              radius: 50,
-              backgroundColor: blueColor,
-            ),
+            const CircleAvatar(radius: 50, backgroundColor: blueColor),
             const SizedBox(height: 20),
             const Text(
               'Signup',
@@ -67,16 +68,16 @@ class _SignupScreanState extends State<SignupScrean> {
               labelText: 'Password',
               hintText: 'Enter your password',
               isPasswordVisible: true,
-              onVisibilityToggle: () {
-                
-              },
+              onVisibilityToggle: () {},
             ),
-            
             const SizedBox(height: 13),
-            false
+            authProvider.getIsLoading
                 ? Center(
                     child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: greenColor, size: 30))
+                      color: greenColor,
+                      size: 30,
+                    ),
+                  )
                 : Container(
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     padding: const EdgeInsets.all(14),
@@ -87,11 +88,31 @@ class _SignupScreanState extends State<SignupScrean> {
                     alignment: Alignment.center,
                     child: const Text(
                       'Signup',
-                      style:
-                          TextStyle(color: white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ).onTap(() async {
-                    DashboardScreen().launch(context,isNewTask: true);
+                    // DashboardScreen().launch(context,isNewTask: true);
+                    String? check = validateInputs(
+                      fName: firstControoler.text.trim(),
+                      lName: lastControoler.text.trim(),
+                      email: emailControoler.text.trim(),
+                      password: passwordControoler.text,
+                    );
+                    if (check != null) {
+                      return showErrorMessage(null, check);
+                    }
+                    bool res = await authProvider.signup(
+                      firstName: firstControoler.text.trim(),
+                      lastName: lastControoler.text.trim(),
+                      email: emailControoler.text.trim(),
+                      password: passwordControoler.text,
+                    );
+                    if (res) {
+                      DashboardScreen().launch(context, isNewTask: true);
+                    }
                   }),
             10.height,
             const SizedBox(height: 20),
@@ -108,7 +129,6 @@ class _SignupScreanState extends State<SignupScrean> {
                 textAlign: TextAlign.left,
               ),
             ),
-            
           ],
         ),
       ),
@@ -117,11 +137,24 @@ class _SignupScreanState extends State<SignupScrean> {
 }
 
 String? validateInputs({
+  required String fName,
+  required String lName,
   required String email,
   required String password,
 }) {
   // Validate Name
 
+  if (fName.isEmpty) {
+    return 'First name cannot be empty';
+  } else if (password.length < 3) {
+    return 'first name must be at least 3 characters long';
+  }
+
+  if (lName.isEmpty) {
+    return 'Last name cannot be empty';
+  } else if (password.length < 3) {
+    return 'Last name must be at least 6 characters long';
+  }
   // Validate Email
   if (email.isEmpty) {
     return 'Email cannot be empty';
