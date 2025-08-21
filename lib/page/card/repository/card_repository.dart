@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bybirr_flutter/core/dio_config.dart';
 import 'package:bybirr_flutter/core/endpoint.dart';
+import 'package:bybirr_flutter/models/virtual_card_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -15,6 +16,24 @@ class CardRepository {
       if (res.statusCode == 200) {
         var data = res.data['data'];
         return Right(data);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      print(e.toString());
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, List<VirtualCardModel>>> fatchCards() async {
+    try {
+      var res = await _dioClient.get('${endpoint}card/getCards');
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        var list = data['cards'] as List;
+        List<VirtualCardModel> cards = list
+            .map((e) => VirtualCardModel.fromJson(e))
+            .toList();
+        return Right(cards);
       }
       return Left(errorMessage);
     } catch (e) {

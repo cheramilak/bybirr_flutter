@@ -1,13 +1,22 @@
 import 'package:bybirr_flutter/models/kyc.dart';
+import 'package:bybirr_flutter/models/virtual_card_model.dart';
+import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/card/order_card_screen.dart';
+import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
 import 'package:bybirr_flutter/page/home/widgets/card_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/virification_dilaog.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class CardListBootomsheet extends StatefulWidget {
   final KYCModel? kycModel;
-  const CardListBootomsheet({super.key, required this.kycModel});
+  final List<VirtualCardModel> cardList;
+  const CardListBootomsheet({
+    super.key,
+    required this.kycModel,
+    required this.cardList,
+  });
 
   @override
   State<CardListBootomsheet> createState() => _CardListBootomsheetState();
@@ -79,13 +88,14 @@ class _CardListBootomsheetState extends State<CardListBootomsheet> {
             //height: 200,
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount: 5,
+              itemCount: widget.cardList.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return CardWidget(
+                return CardListWidget(
                   size: size,
                   colorScheme: colorScheme,
                   theme: theme,
+                  cardModel: widget.cardList[index],
                 );
               },
             ),

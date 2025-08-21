@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bybirr_flutter/core/exception_message.dart';
 import 'package:bybirr_flutter/models/bank_model.dart';
 import 'package:bybirr_flutter/models/rate_model.dart';
+import 'package:bybirr_flutter/models/virtual_card_model.dart';
 import 'package:bybirr_flutter/page/card/repository/card_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,9 +13,15 @@ class CardProvider extends ChangeNotifier {
   RateModel? rateModel;
   int selectBankIndex = -1;
   List<BankModel> bankList = [];
+  List<VirtualCardModel> virtualCardList = [];
+
+  List<VirtualCardModel> get getCards => virtualCardList;
 
   bool isLoadingPayment = false;
   bool get getLoadingPayment => isLoadingPayment;
+  bool isLoadingCards = false;
+  bool isVissableBalance = false;
+  bool get getLoadingCards => isLoadingCards;
   RateModel? get getRate => rateModel;
   List<BankModel> get getBankList => bankList;
   File? screenshoot;
@@ -41,6 +48,11 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setLoadingCards(bool value) {
+    isLoadingCards = value;
+    notifyListeners();
+  }
+
   set setRate(RateModel? value) {
     rateModel = value;
     notifyListeners();
@@ -53,6 +65,16 @@ class CardProvider extends ChangeNotifier {
 
   set setSelectedBank(int value) {
     selectBankIndex = value;
+    notifyListeners();
+  }
+
+  toogleBalanceVissable() {
+    isVissableBalance = !isVissableBalance;
+    notifyListeners();
+  }
+
+  set setcardList(List<VirtualCardModel> value) {
+    virtualCardList = value;
     notifyListeners();
   }
 
@@ -72,6 +94,26 @@ class CardProvider extends ChangeNotifier {
         },
       );
     } catch (e) {
+      showErrorMessage(null, e.toString());
+    }
+  }
+
+  Future fatchCards() async {
+    try {
+      setLoadingPayment = true;
+      var res = await _repository.fatchCards();
+      res.fold(
+        (l) {
+          setLoadingPayment = false;
+          showErrorMessage(null, l);
+        },
+        (r) {
+          setLoadingPayment = false;
+          setcardList = r;
+        },
+      );
+    } catch (e) {
+      setLoadingPayment = false;
       showErrorMessage(null, e.toString());
     }
   }
