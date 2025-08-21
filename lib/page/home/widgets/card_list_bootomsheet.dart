@@ -1,4 +1,5 @@
 import 'package:bybirr_flutter/models/kyc.dart';
+import 'package:bybirr_flutter/page/card/order_card_screen.dart';
 import 'package:bybirr_flutter/page/home/widgets/card_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/virification_dilaog.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,9 @@ class _CardListBootomsheetState extends State<CardListBootomsheet> {
                   return VirificationFailDilaog();
                 },
               );
+            }
+            if (widget.kycModel!.status == 'Approved') {
+              OrderCardScreen().launch(context);
             }
           }),
           Expanded(

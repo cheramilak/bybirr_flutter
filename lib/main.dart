@@ -2,6 +2,8 @@ import 'package:bybirr_flutter/core/app_theme.dart';
 import 'package:bybirr_flutter/page/auth/login_screan.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/blog/blog_provider.dart';
+import 'package:bybirr_flutter/page/card/order_card_screen.dart';
+import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_screen.dart';
@@ -71,6 +73,11 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) {
             return IntroductionProvider();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            return CardProvider();
           },
         ),
       ],
