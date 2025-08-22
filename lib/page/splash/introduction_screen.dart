@@ -48,7 +48,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               controller: introductionProvider.getController,
               count: getIntroductionList.length,
               axisDirection: Axis.horizontal,
-              effect: ExpandingDotsEffect(),
+              effect: ExpandingDotsEffect(
+                dotWidth: 10.0,
+                dotHeight: 10.0,
+                expansionFactor: 2,
+                spacing: 5.0,
+                dotColor: isDark ? Colors.grey : Colors.black26,
+                activeDotColor: theme.colorScheme.primary,
+              ),
             ),
           ),
           10.height,
@@ -56,7 +63,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   LoginScrean().launch(context);
                 },
                 style: ElevatedButton.styleFrom(
@@ -81,8 +88,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   SignupScrean().launch(context);
                 },
                 style: ElevatedButton.styleFrom(
-                 // backgroundColor: theme.colorScheme.primary,
-                 // oregroundColor: theme.colorScheme.onPrimary,
+                  // backgroundColor: theme.colorScheme.primary,
+                  // oregroundColor: theme.colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

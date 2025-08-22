@@ -1,4 +1,5 @@
 import 'package:bybirr_flutter/core/exception_message.dart';
+import 'package:bybirr_flutter/page/auth/password_reset_screen.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/auth/signup_screan.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
@@ -25,23 +26,24 @@ class _LoginScreanState extends State<LoginScrean> {
     final colorScheme = theme.colorScheme;
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
-            const CircleAvatar(radius: 50, backgroundColor: blueColor),
             const SizedBox(height: 20),
-            const Text(
-              'Log In',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
+            Text(
+              'Hello There!',
+              style: theme.textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
+            5.height,
+            Text(
+              'Please enter your email and password \n to continue',
+              style: theme.textTheme.labelMedium,
+            ),
+            5.height,
+
             const SizedBox(height: 20),
             textFormAuth(
               controller: emailControoler,
@@ -49,7 +51,6 @@ class _LoginScreanState extends State<LoginScrean> {
               hintText: 'Enter your email',
               icon: Icons.email,
             ),
-            const SizedBox(height: 20),
             passwordFormAuth(
               controller: passwordControoler,
               labelText: 'Password',
@@ -60,13 +61,12 @@ class _LoginScreanState extends State<LoginScrean> {
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  PasswordResetScreen().launch(context);
+                },
                 child: const Text(
-                  'Forget password?',
-                  style: TextStyle(
-                    fontSize: 16,
-                    decoration: TextDecoration.underline,
-                  ),
+                  'Forget Password?',
+                  style: TextStyle(fontSize: 16),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -74,8 +74,8 @@ class _LoginScreanState extends State<LoginScrean> {
             const SizedBox(height: 13),
             authProvider.getIsLoading
                 ? Center(
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: greenColor,
+                    child: LoadingAnimationWidget.inkDrop(
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                   )
@@ -83,15 +83,15 @@ class _LoginScreanState extends State<LoginScrean> {
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: fxPrimaryColor,
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'Login',
                       style: TextStyle(
-                        color: white,
                         fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ).onTap(() async {
@@ -112,21 +112,82 @@ class _LoginScreanState extends State<LoginScrean> {
                   }),
             10.height,
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                SignupScrean().launch(context);
-              },
-              child: const Text(
-                'If have not account? Sign up',
-                style: TextStyle(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                ),
-                textAlign: TextAlign.left,
+            Align(
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: () {
+                  SignupScrean().launch(context);
+                },
+                child: const Text('Don\'t have an account? Sign up'),
               ),
             ),
+            Expanded(child: SizedBox()),
+            Row(
+              children: [
+                Expanded(child: Container(height: 0.4, color: gray)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    'Or continue with',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+                5.width,
+                Expanded(child: Container(height: 0.4, color: gray)),
+              ],
+            ),
+            10.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.email),
+                  ),
+                ),
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.facebook),
+                  ),
+                ),
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.apple),
+                  ),
+                ),
+                10.width,
+              ],
+            ),
+            10.height,
           ],
-        ),
+        ).paddingAll(10),
       ),
     );
   }

@@ -71,8 +71,10 @@ abstract final class AppTheme {
   );
   // The defined dark theme.
   static ThemeData dark = FlexThemeData.dark(
-    colors: FlexColor.schemes[FlexScheme.blackWhite]!.light.defaultError
-        .toDark(40, false),
+    colors: FlexColor.schemes[FlexScheme.blackWhite]!.light.defaultError.toDark(
+      40,
+      false,
+    ),
     usedColors: 7,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
     blendLevel: 10,

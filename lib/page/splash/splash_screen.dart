@@ -63,6 +63,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
     return Scaffold(
       body: Center(
         child: Column(
@@ -73,11 +76,10 @@ class _SplashScreenState extends State<SplashScreen> {
               radius: 50,
             ),
             const SizedBox(height: 20),
-            const Text('Welcome to our app'),
+            Text('Bybirr', style: theme.textTheme.titleLarge),
             const SizedBox(height: 20),
-
-            LoadingAnimationWidget.staggeredDotsWave(
-              color: greenColor,
+            LoadingAnimationWidget.inkDrop(
+              color: colorScheme.primary,
               size: 30,
             ),
           ],

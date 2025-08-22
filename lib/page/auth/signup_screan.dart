@@ -27,23 +27,23 @@ class _SignupScreanState extends State<SignupScrean> {
     final colorScheme = theme.colorScheme;
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
-            const CircleAvatar(radius: 50, backgroundColor: blueColor),
             const SizedBox(height: 20),
-            const Text(
-              'Signup',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
+            Text(
+              'Create account',
+              style: theme.textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
+            5.height,
+            Text(
+              'Please enter your name, email and password \n to create new account',
+              style: theme.textTheme.labelMedium,
+            ),
+            5.height,
             const SizedBox(height: 20),
             textFormAuth(
               controller: firstControoler,
@@ -73,8 +73,8 @@ class _SignupScreanState extends State<SignupScrean> {
             const SizedBox(height: 13),
             authProvider.getIsLoading
                 ? Center(
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: greenColor,
+                    child: LoadingAnimationWidget.inkDrop(
+                      color: colorScheme.primary,
                       size: 30,
                     ),
                   )
@@ -82,7 +82,7 @@ class _SignupScreanState extends State<SignupScrean> {
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: fxPrimaryColor,
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     alignment: Alignment.center,
@@ -116,21 +116,86 @@ class _SignupScreanState extends State<SignupScrean> {
                   }),
             10.height,
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                LoginScrean().launch(context);
-              },
-              child: const Text(
-                'If  account? Login',
-                style: TextStyle(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
+            Align(
+              alignment: AlignmentGeometry.center,
+              child: GestureDetector(
+                onTap: () {
+                  LoginScrean().launch(context);
+                },
+                child: const Text(
+                  'If you have account? Login',
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.left,
               ),
             ),
+            Expanded(child: SizedBox()),
+            Row(
+              children: [
+                Expanded(child: Container(height: 0.4, color: gray)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    'Or continue with',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+                5.width,
+                Expanded(child: Container(height: 0.4, color: gray)),
+              ],
+            ),
+            10.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.email),
+                  ),
+                ),
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.facebook),
+                  ),
+                ),
+                10.width,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.apple),
+                  ),
+                ),
+                10.width,
+              ],
+            ),
+            10.height,
           ],
-        ),
+        ).paddingAll(10),
       ),
     );
   }

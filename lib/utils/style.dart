@@ -17,17 +17,14 @@ InputDecoration inputDecoretionForm({
     counter: const Offstage(),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: borderColor ?? fxPrimaryColor),
+      borderSide: BorderSide(),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(radius ?? 16)),
       borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
     ),
-    fillColor: bgColor ?? fxPrimaryColor.withOpacity(0.04),
     hintText: hint,
-    prefixIcon: prefixIcon != null
-        ? Icon(prefixIcon, color: fxPrimaryColor)
-        : null,
+    prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
     hintStyle: secondaryTextStyle(),
     filled: true,
   );
@@ -74,23 +71,21 @@ Widget passwordFormAuth({
           horizontal: 16,
         ),
         hintText: hintText,
-        prefixIcon: const Icon(Icons.lock, color: fxPrimaryColor),
+        prefixIcon: const Icon(Icons.lock),
         suffixIcon: IconButton(
           icon: Icon(
             isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            color: fxPrimaryColor,
           ),
           onPressed: onVisibilityToggle,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: fxPrimaryColor),
+          borderSide: const BorderSide(),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
         ),
-        fillColor: fxPrimaryColor.withOpacity(0.04),
         hintStyle: secondaryTextStyle(),
         filled: true,
       ),

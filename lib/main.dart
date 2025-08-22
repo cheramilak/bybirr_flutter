@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bybirr_flutter/core/app_theme.dart';
 import 'package:bybirr_flutter/page/auth/login_screan.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
@@ -7,6 +9,7 @@ import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_screen.dart';
+import 'package:bybirr_flutter/page/splash/introduction_screen.dart';
 import 'package:bybirr_flutter/page/splash/providers/introduction_provider.dart';
 import 'package:bybirr_flutter/page/splash/splash_screen.dart';
 import 'package:bybirr_flutter/providers/theme_provider.dart';
@@ -101,7 +104,8 @@ class _MyAppState extends State<MyApp> {
                     ThemeData.light().textTheme,
                   ),
                 ),
-          home: SplashScreen(),
+
+          home: IntroductionScreen(),
         );
       },
     );
