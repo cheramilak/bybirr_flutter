@@ -18,9 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Account'),
-      ),
+      appBar: AppBar(title: const Text('Account')),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 5),
         child: Column(
@@ -28,69 +26,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              
               title: Text('User name'),
               subtitle: Text('test@gmail.com'),
               trailing: Icon(Icons.verified),
             ),
             5.height,
-            Container(
-              height: 0.4,
-              color: gray,
-            ),
+            Container(height: 0.4, color: gray),
             10.height,
             Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    'Personal',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                  child: Text('Personal', style: TextStyle(fontSize: 12)),
                 ),
                 5.width,
-                Expanded(
-                  child: Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
-                ),
+                Expanded(child: Container(height: 0.4, color: gray)),
               ],
             ),
             Container(
               padding: EdgeInsets.all(10),
               margin: EdgeInsets.only(left: 10, right: 10),
               decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: gray.withOpacity(0.5)),
-                  borderRadius: BorderRadius.circular(5),
-                  color: colorScheme.surface),
+                border: Border.all(width: 1, color: gray.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(5),
+                color: colorScheme.surface,
+              ),
               child: Column(
                 children: [
                   ListTile(
-                    onTap: () {
-                     
-                    },
+                    onTap: () {},
                     leading: CircleAvatar(
                       radius: 17,
                       child: Icon(Icons.person_2_outlined),
                     ),
                     title: Text(
                       'Personal info',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     onTap: () {
-                     // NotificationScreen().launch(context);
+                      // NotificationScreen().launch(context);
                     },
                     leading: CircleAvatar(
                       radius: 17,
@@ -98,19 +79,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Notifications',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
-                 
+                  Container(height: 0.4, color: gray),
+
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -118,22 +95,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Dark mode',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     trailing: Switch(
-                        value: themeProvider.getIsDarkMode,
-                        onChanged: (value) {
-                          themeProvider.setDarkMode = value;
-                        }),
+                      value: themeProvider.getIsDarkMode,
+                      onChanged: (value) {
+                        themeProvider.setDarkMode = value;
+                      },
+                    ),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     onTap: () {
-                     // SecurityScreen().launch(context);
+                      // SecurityScreen().launch(context);
                     },
                     leading: CircleAvatar(
                       radius: 17,
@@ -141,13 +118,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Security',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
                 ],
               ),
@@ -157,18 +133,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    'About',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                  child: Text('About', style: TextStyle(fontSize: 12)),
                 ),
                 5.width,
-                Expanded(
-                  child: Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
-                ),
+                Expanded(child: Container(height: 0.4, color: gray)),
               ],
             ),
             3.height,
@@ -176,9 +144,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.all(10),
               margin: EdgeInsets.only(left: 10, right: 10),
               decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: gray.withOpacity(0.5)),
-                  borderRadius: BorderRadius.circular(5),
-                  color: colorScheme.surface),
+                border: Border.all(width: 1, color: gray.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(5),
+                color: colorScheme.surface,
+              ),
               child: Column(
                 children: [
                   ListTile(
@@ -188,18 +157,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Help center',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -207,18 +172,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'About us',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -226,18 +187,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Contact us',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -245,18 +202,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Privacy policy',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -264,18 +217,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Fellow us on social media',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
+                  Container(height: 0.4, color: gray),
                   ListTile(
                     leading: CircleAvatar(
                       radius: 17,
@@ -283,22 +232,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     title: const Text(
                       'Rate us',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 15,
-                    ),
+                    trailing: Icon(Icons.arrow_forward_ios_outlined, size: 15),
                   ),
-                  Container(
-                    height: 0.4,
-                    color: gray,
-                  ),
-                 
+                  Container(height: 0.4, color: gray),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -10,7 +10,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final bool isnew;
+  final String? token;
+  const OtpScreen({super.key, required this.isnew, this.token});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -44,17 +46,27 @@ class _OtpScreenState extends State<OtpScreen> {
             5.height,
 
             const SizedBox(height: 20),
-            Align(
-              alignment: AlignmentGeometry.center,
-              child: OTPTextField(
-                pinLength: 5,
-                fieldWidth: 60,
-                boxDecoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.primary, width: 0.3),
+            Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.9,
                 ),
-                onCompleted: (value) {
-                  print(value);
-                },
+                child: OTPTextField(
+                  pinLength: 6,
+                  fieldWidth: 45, // Responsive width
+                  boxDecoration: BoxDecoration(
+                    border: Border.all(color: colorScheme.primary, width: 0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  onCompleted: (value) {
+                    print(value);
+                    authProvider.setOtp = value;
+                  },
+                  onChanged: (value) {
+                    print(value);
+                    authProvider.setOtp = value;
+                  },
+                ),
               ),
             ),
             15.height,
@@ -66,28 +78,51 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
             ),
             5.height,
-            Center(
-              child: Text.rich(
-                TextSpan(
-                  text: 'Resend The Code in',
-                  style: theme.textTheme.labelMedium!.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' 01:30',
-                      style: theme.textTheme.labelMedium!.copyWith(
-                        color: theme.colorScheme.error,
-                        fontWeight: FontWeight.bold,
-                      ),
+            if (authProvider.counter > 0)
+              Center(
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Resend The Code in ',
+                    style: theme.textTheme.labelMedium!.copyWith(
+                      color: theme.colorScheme.primary,
                     ),
-                  ],
+                    children: [
+                      TextSpan(
+                        text: '${authProvider.counter}',
+                        style: theme.textTheme.labelMedium!.copyWith(
+                          color: theme.colorScheme.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
+            if (authProvider.counter == 0)
+              authProvider.isLoadingOtp
+                  ? SizedBox()
+                  : Align(
+                      alignment: AlignmentGeometry.center,
+                      child:
+                          Text(
+                            'Resend',
+                            style: theme.textTheme.labelLarge!.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ).onTap(() {
+                            if (widget.isnew) {
+                              authProvider.verifyEmail();
+                            }
+                            if (widget.token != null) {
+                              authProvider.resendOtp(token: widget.token!);
+                            }
+                          }),
+                    ),
             Expanded(child: SizedBox()),
-            authProvider.getIsLoading
+            authProvider.getIsLoadingOtp
                 ? Center(
                     child: LoadingAnimationWidget.inkDrop(
                       color: colorScheme.primary,
@@ -103,14 +138,30 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'Reset',
+                      !widget.isnew ? 'Reset' : 'Verify',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ).onTap(() async {
-                    ChangePasswordScreen().launch(context);
+                    if (authProvider.getOtp.isNotEmpty) {
+                      if (widget.token != null) {
+                        bool res = await authProvider.checkPasswordResetOtp(
+                          token: widget.token!,
+                          otp: authProvider.getOtp,
+                        );
+                        if (res) {
+                          ChangePasswordScreen().launch(context);
+                        }
+                      }
+                      if (widget.isnew) {
+                        bool res = await authProvider.verifyOtp();
+                        if (res) {
+                          DashboardScreen().launch(context);
+                        }
+                      }
+                    }
                   }),
             20.height,
           ],

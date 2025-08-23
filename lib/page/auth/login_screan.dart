@@ -1,4 +1,7 @@
 import 'package:bybirr_flutter/core/exception_message.dart';
+import 'package:bybirr_flutter/models/user_model.dart';
+import 'package:bybirr_flutter/page/auth/email_verification_screen.dart';
+import 'package:bybirr_flutter/page/auth/otp_screen.dart';
 import 'package:bybirr_flutter/page/auth/password_reset_screen.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/auth/signup_screan.dart';
@@ -58,6 +61,7 @@ class _LoginScreanState extends State<LoginScrean> {
               isPasswordVisible: true,
               onVisibilityToggle: () {},
             ),
+            10.height,
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
@@ -102,12 +106,16 @@ class _LoginScreanState extends State<LoginScrean> {
                     if (check != null) {
                       return showErrorMessage(null, check);
                     }
-                    bool res = await authProvider.Login(
+                    UserModel? res = await authProvider.Login(
                       email: emailControoler.text.trim(),
                       password: passwordControoler.text,
                     );
-                    if (res) {
-                      DashboardScreen().launch(context, isNewTask: true);
+                    if (res != null) {
+                      if (res.emailVerifiedAt == null) {
+                        return EmailVerificationScreen().launch(context);
+                      } else {
+                        DashboardScreen().launch(context, isNewTask: true);
+                      }
                     }
                   }),
             10.height,

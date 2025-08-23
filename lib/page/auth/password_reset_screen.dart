@@ -51,7 +51,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
               icon: Icons.email,
             ),
             Expanded(child: SizedBox()),
-            authProvider.getIsLoading
+            authProvider.getIsLoadingOtp
                 ? Center(
                     child: LoadingAnimationWidget.inkDrop(
                       color: colorScheme.primary,
@@ -74,7 +74,20 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       ),
                     ),
                   ).onTap(() async {
-                    OtpScreen().launch(context);
+                    String? check = validateEmail(email: emailControoler.text);
+                    if (check != null) {
+                      return showErrorMessage(null, check);
+                    }
+                    authProvider
+                        .foregetPassword(email: emailControoler.text)
+                        .then((value) {
+                          if (value != null) {
+                            OtpScreen(
+                              isnew: false,
+                              token: value,
+                            ).launch(context);
+                          }
+                        });
                   }),
             20.height,
           ],
@@ -84,7 +97,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   }
 }
 
-String? validateInputs({required String email, required String password}) {
+String? validateEmail({required String email}) {
   // Validate Name
 
   // Validate Email
@@ -94,9 +107,5 @@ String? validateInputs({required String email, required String password}) {
     return 'Enter a valid email address';
   }
 
-  // Validate Password
-  if (password.isEmpty) {
-    return 'Password cannot be empty';
-  }
   return null;
 }

@@ -6,6 +6,7 @@ class UserModel {
   final String lastName;
   final String email;
   final String status;
+  final String? emailVerifiedAt;
   KYCModel? kycModel;
   final List<VirtualCardModel> cards;
 
@@ -16,6 +17,7 @@ class UserModel {
     required this.status,
     this.kycModel,
     required this.cards,
+    this.emailVerifiedAt,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,7 +28,8 @@ class UserModel {
       lastName: json['last_name'],
       email: json['email'],
       status: json['status'],
-      kycModel: KYCModel.fromJson(json['kyc']),
+      kycModel: json['kyc'] != null ? KYCModel.fromJson(json['kyc']) : null,
+      emailVerifiedAt: json['email_verified_at'],
       cards: list.map((e) => VirtualCardModel.fromJson(e)).toList(),
     );
   }

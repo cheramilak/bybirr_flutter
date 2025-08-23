@@ -1,5 +1,6 @@
 import 'package:bybirr_flutter/core/dio_config.dart';
 import 'package:bybirr_flutter/core/user_data.dart';
+import 'package:bybirr_flutter/page/auth/email_verification_screen.dart';
 import 'package:bybirr_flutter/page/auth/login_screan.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
@@ -24,17 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void init() async {
-    await Future.delayed(Duration(seconds: 2));
-
-    // Check if the widget is still mounted before using context
-
-    // await UserData().getisNewInstall().then((e) {
-    //   if (e) {
-    //     // Make sure the widget is still mounted before navigating
-    //     return IntroductionPage().launch(context, isNewTask: true);
-    //   }
-    // });
-
     await DioClient().getAuthToken().then((e) {
       if (e.isEmpty) {
         // Make sure the widget is still mounted before navigating
@@ -46,8 +36,14 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             listen: false,
           ).getUserProfile().then((e) {
-            if (e) {
+            if (e == 'success') {
               return DashboardScreen().launch(context, isNewTask: true);
+            } else if (e == 'Unauthenticated.') {
+              DioClient().deltetAuthToken();
+              return LoginScrean().launch(context, isNewTask: true);
+            }
+            if (e == 'notVerified') {
+              return EmailVerificationScreen().launch(context, isNewTask: true);
             }
           });
         });

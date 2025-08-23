@@ -17,7 +17,8 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  TextEditingController emailControoler = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -45,21 +46,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
             const SizedBox(height: 20),
             passwordFormAuth(
-              controller: emailControoler,
+              controller: passwordController,
               labelText: 'New password',
               hintText: 'Enter new password',
               isPasswordVisible: false,
               onVisibilityToggle: () {},
             ),
             passwordFormAuth(
-              controller: emailControoler,
+              controller: confirmPasswordController,
               labelText: 'Confirm Password',
               hintText: 'Re-enter your new password',
               isPasswordVisible: false,
               onVisibilityToggle: () {},
             ),
             Expanded(child: SizedBox()),
-            authProvider.getIsLoading
+            authProvider.getIsLoadingOtp
                 ? Center(
                     child: LoadingAnimationWidget.inkDrop(
                       color: colorScheme.primary,
@@ -82,7 +83,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                     ),
                   ).onTap(() async {
-                    DashboardScreen().launch(context);
+                    String? check = validateInputs(
+                      password: passwordController.text,
+                      confirmPassword: confirmPasswordController.text,
+                    );
+                    if (check != null) {
+                      showErrorMessage(null, check);
+                    }
+                    bool res = await authProvider.resetPassword(
+                      password: passwordController.text,
+                    );
+                    if (res) {
+                      DashboardScreen().launch(context);
+                    }
                   }),
             20.height,
           ],
@@ -92,19 +105,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 }
 
-String? validateInputs({required String email, required String password}) {
+String? validateInputs({
+  required String password,
+  required String confirmPassword,
+}) {
   // Validate Name
 
   // Validate Email
-  if (email.isEmpty) {
-    return 'Email cannot be empty';
-  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
-    return 'Enter a valid email address';
+  if (password.isEmpty) {
+    return 'Password cannot be empty';
+  } else if (password.length < 6) {
+    return 'Password must be at least 6 characters long';
   }
 
   // Validate Password
-  if (password.isEmpty) {
-    return 'Password cannot be empty';
+  if (confirmPassword.isEmpty) {
+    return 'Confirm Password cannot be empty';
+  } else if (confirmPassword.length < 6) {
+    return 'Confirm Password must be at least 6 characters long';
+  } else if (confirmPassword != password) {
+    return 'Password and Confirm Password do not match';
   }
   return null;
 }

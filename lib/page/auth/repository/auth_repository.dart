@@ -132,4 +132,120 @@ class AuthRepository {
       return Left(e.toString());
     }
   }
+
+  Future<Either<String, String>> emailVerification() async {
+    try {
+      var res = await _dioClient.get('${endpoint}auth/emailVerification');
+      print(res);
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        print(data);
+        return Right('success');
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      print(e.toString());
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, String>> verifyOtp({required String otp}) async {
+    try {
+      var res = await _dioClient.post(
+        '${endpoint}auth/checkOtp',
+        data: {'code': otp},
+      );
+      if (res.statusCode == 200) {
+        return Right('success');
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, String>> logout() async {
+    try {
+      var res = await _dioClient.post('${endpoint}auth/logout');
+      if (res.statusCode == 200) {
+        return Right('success');
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, String>> foregetPassword({
+    required String email,
+  }) async {
+    try {
+      var res = await _dioClient.post(
+        '${endpoint}auth/forgetPassword',
+        data: {'email': email},
+      );
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        print(data);
+
+        return Right(data['token']);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, bool>> resendOtp({required String token}) async {
+    try {
+      var res = await _dioClient.post(
+        '${endpoint}auth/resendPasswordResetOtp',
+        data: {'token': token},
+      );
+      if (res.statusCode == 200) {
+        print(res.data);
+        return Right(true);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, UserModel>> checkPasswordResetOtp({
+    required String token,
+    required String otp,
+  }) async {
+    try {
+      var res = await _dioClient.post(
+        '${endpoint}auth/checkPasswordResetOtp',
+        data: {'token': token, 'code': otp},
+      );
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        print(data);
+        UserModel user = UserModel.fromJson(data['user']);
+        await _dioClient.setAuthToken(data['token']);
+        return Right(user);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, bool>> resetPassword({required String password}) async {
+    try {
+      var res = await _dioClient.post(
+        '${endpoint}auth/resetPassword',
+        data: {'password': password},
+      );
+      if (res.statusCode == 200) {
+        return Right(true);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
 }

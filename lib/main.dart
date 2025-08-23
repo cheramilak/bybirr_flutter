@@ -105,7 +105,6 @@ class _MyAppState extends State<MyApp> {
                     ThemeData.light().textTheme,
                   ),
                 ),
-
           home: SplashScreen(),
         );
       },
