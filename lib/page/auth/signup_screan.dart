@@ -32,7 +32,7 @@ class _SignupScreanState extends State<SignupScrean> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Text(
               'Create account',
               style: theme.textTheme.titleLarge,

@@ -1,5 +1,5 @@
 import 'package:bybirr_flutter/core/exception_message.dart';
-import 'package:bybirr_flutter/page/auth/change_password_screen.dart';
+import 'package:bybirr_flutter/page/auth/otp_screen.dart';
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/auth/signup_screan.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
@@ -9,14 +9,14 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
-class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<OtpScreen> createState() => _OtpScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   TextEditingController emailControoler = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -32,59 +32,31 @@ class _OtpScreenState extends State<OtpScreen> {
           children: [
             const SizedBox(height: 40),
             Text(
-              'You\'ve Got an Mail',
+              'Create New Password',
               style: theme.textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             5.height,
             Text(
-              'We have sent you an OTP verification code to your \n email address. Check your inbox and enter the code below',
+              'Please enter your new password.',
               style: theme.textTheme.labelSmall,
             ),
             5.height,
 
             const SizedBox(height: 20),
-            Align(
-              alignment: AlignmentGeometry.center,
-              child: OTPTextField(
-                pinLength: 5,
-                fieldWidth: 60,
-                boxDecoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.primary, width: 0.3),
-                ),
-                onCompleted: (value) {
-                  print(value);
-                },
-              ),
+            passwordFormAuth(
+              controller: emailControoler,
+              labelText: 'New password',
+              hintText: 'Enter new password',
+              isPasswordVisible: false,
+              onVisibilityToggle: () {},
             ),
-            15.height,
-            Center(
-              child: Text(
-                'Didn\'t Receive email?',
-                style: theme.textTheme.labelLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            5.height,
-            Center(
-              child: Text.rich(
-                TextSpan(
-                  text: 'Resend The Code in',
-                  style: theme.textTheme.labelMedium!.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' 01:30',
-                      style: theme.textTheme.labelMedium!.copyWith(
-                        color: theme.colorScheme.error,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
+            passwordFormAuth(
+              controller: emailControoler,
+              labelText: 'Confirm Password',
+              hintText: 'Re-enter your new password',
+              isPasswordVisible: false,
+              onVisibilityToggle: () {},
             ),
             Expanded(child: SizedBox()),
             authProvider.getIsLoading
@@ -103,14 +75,14 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'Reset',
+                      'Continue',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
                   ).onTap(() async {
-                    ChangePasswordScreen().launch(context);
+                    DashboardScreen().launch(context);
                   }),
             20.height,
           ],

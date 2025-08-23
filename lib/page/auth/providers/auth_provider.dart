@@ -5,7 +5,13 @@ import 'package:bybirr_flutter/page/auth/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
-  UserModel? userModel;
+  UserModel? userModel = UserModel(
+    firstName: '',
+    lastName: '',
+    email: '',
+    status: '',
+    cards: [],
+  );
   AuthRepository _repository = AuthRepository();
   bool isLoading = false;
   bool get getIsLoading => isLoading;

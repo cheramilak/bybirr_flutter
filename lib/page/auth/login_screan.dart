@@ -31,7 +31,7 @@ class _LoginScreanState extends State<LoginScrean> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             Text(
               'Hello There!',
               style: theme.textTheme.titleLarge,
