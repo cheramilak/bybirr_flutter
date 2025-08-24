@@ -1,5 +1,6 @@
 import 'package:bybirr_flutter/models/virtual_card_model.dart';
 import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
+import 'package:bybirr_flutter/page/card/virtual_card_detal_screen.dart';
 import 'package:bybirr_flutter/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -41,11 +42,77 @@ class CardWidget extends StatelessWidget {
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                cardProvider.isVissableBalance
-                    ? '\$${cardModel.balance}'
-                    : '\$*****',
-                style: theme.textTheme.headlineLarge,
+                cardModel.cardholderName,
+                style: theme.textTheme.headlineMedium,
               ),
+            ],
+          ),
+          Expanded(
+            child: SizedBox(
+              child: Align(
+                alignment: AlignmentGeometry.centerRight,
+                child: Icon(Icons.wifi),
+              ),
+            ),
+          ),
+          Text(
+            maskCardNumber(cardModel.cardNumber),
+            style: theme.textTheme.bodyLarge,
+          ),
+          10.height,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(cardModel.valid, style: theme.textTheme.bodySmall),
+              Icon(Icons.card_membership).paddingRight(10),
+            ],
+          ),
+        ],
+      ),
+    ).onTap(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => VirtualCardDetailScreen(virtualCardModel: cardModel),
+        ),
+      );
+    });
+  }
+}
+
+class DemoCardWidget extends StatelessWidget {
+  const DemoCardWidget({
+    super.key,
+    required this.size,
+    required this.colorScheme,
+    required this.theme,
+  });
+
+  final Size size;
+  final ColorScheme colorScheme;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    CardProvider cardProvider = Provider.of<CardProvider>(context);
+    return Container(
+      height: size.height * 0.2,
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: colorScheme.surfaceBright,
+        border: Border.all(width: 0.5, color: gray),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('\$*****', style: theme.textTheme.headlineLarge),
               15.width,
               Icon(
                     cardProvider.isVissableBalance
@@ -66,15 +133,12 @@ class CardWidget extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            maskCardNumber(cardModel.cardNumber),
-            style: theme.textTheme.bodyLarge,
-          ),
+          Text('1234567890123456', style: theme.textTheme.bodyLarge),
           10.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(cardModel.expirationDate, style: theme.textTheme.bodySmall),
+              Text('12/28', style: theme.textTheme.bodySmall),
               Icon(Icons.card_membership).paddingRight(10),
             ],
           ),
@@ -129,7 +193,7 @@ class CardListWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(cardModel.expirationDate, style: theme.textTheme.bodySmall),
+              Text(cardModel.valid, style: theme.textTheme.bodySmall),
               Icon(Icons.card_membership).paddingRight(10),
             ],
           ),

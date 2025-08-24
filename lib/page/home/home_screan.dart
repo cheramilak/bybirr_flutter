@@ -1,5 +1,6 @@
 import 'package:bybirr_flutter/page/auth/providers/auth_provider.dart';
 import 'package:bybirr_flutter/page/card/virtual_card_detal_screen.dart';
+import 'package:bybirr_flutter/page/home/providers/home_provider.dart';
 import 'package:bybirr_flutter/page/home/widgets/card_list_bootomsheet.dart';
 import 'package:bybirr_flutter/page/home/widgets/card_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/shimmer_loading_widget.dart';
@@ -27,6 +28,7 @@ class _HomeScreanState extends State<HomeScrean> {
     final size = MediaQuery.of(context).size;
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    HomeProvider homeProvider = Provider.of<HomeProvider>(context);
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () {
@@ -48,7 +50,7 @@ class _HomeScreanState extends State<HomeScrean> {
                     style: theme.textTheme.displaySmall!.copyWith(fontSize: 17),
                   ),
                   subtitle: Text(
-                    'User name',
+                    homeProvider.userName,
                     style: theme.textTheme.displaySmall!.copyWith(fontSize: 13),
                   ),
                   trailing: Icon(Icons.notifications).onTap(() {
@@ -56,32 +58,21 @@ class _HomeScreanState extends State<HomeScrean> {
                   }),
                 ),
                 10.height,
-                authProvider.getUser!.cards.isNotEmpty
+                homeProvider.getIsLoading
+                    ? ShimmerCardWidget(size: size, colorScheme: colorScheme)
+                    : authProvider.getUser.cards.isNotEmpty
                     ? CardWidget(
                         size: size,
                         colorScheme: colorScheme,
                         theme: theme,
-                        cardModel: authProvider.getUser!.cards[0],
+                        cardModel: authProvider.getUser.cards[0],
                       )
-                    : ShimmerCardWidget(
+                    : DemoCardWidget(
                         size: size,
                         colorScheme: colorScheme,
-                      ).onTap(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const VirtualCardDetailScreen(
-                              cardHolderName: "John Doe",
-                              cardNumber: "1234567812345678",
-                              expiryDate: "12/28",
-                              cvv: "123",
-                              balance: "\$1,200.50",
-                              cardType: "Visa",
-                            ),
-                          ),
-                        );
-                      }),
-                true
+                        theme: theme,
+                      ),
+                homeProvider.getIsLoading
                     ? KycShimmerWidget()
                     : Container(
                         width: double.infinity,
@@ -159,7 +150,7 @@ class _HomeScreanState extends State<HomeScrean> {
                         }
                       }),
                 10.height,
-                true
+                homeProvider.getIsLoading
                     ? ActionRowShimmer()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

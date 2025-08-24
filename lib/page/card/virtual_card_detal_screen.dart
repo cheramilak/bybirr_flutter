@@ -1,25 +1,23 @@
+import 'package:bybirr_flutter/models/virtual_card_model.dart';
 import 'package:bybirr_flutter/page/home/widgets/shimmer_loading_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/transaction_detail_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class VirtualCardDetailScreen extends StatelessWidget {
-  final String cardHolderName;
-  final String cardNumber;
-  final String expiryDate;
-  final String cvv;
-  final String balance;
-  final String cardType; // e.g. "Visa", "Mastercard"
+class VirtualCardDetailScreen extends StatefulWidget {
+  final VirtualCardModel virtualCardModel;
+  const VirtualCardDetailScreen({super.key, required this.virtualCardModel});
 
-  const VirtualCardDetailScreen({
-    super.key,
-    required this.cardHolderName,
-    required this.cardNumber,
-    required this.expiryDate,
-    required this.cvv,
-    required this.balance,
-    required this.cardType,
-  });
+  @override
+  State<VirtualCardDetailScreen> createState() =>
+      _VirtualCardDetailScreenState();
+}
+
+class _VirtualCardDetailScreenState extends State<VirtualCardDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +55,7 @@ class VirtualCardDetailScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: Text(
-                      cardType,
+                      widget.virtualCardModel.cardholderName,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -66,7 +64,7 @@ class VirtualCardDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    cardNumber.replaceAllMapped(
+                    widget.virtualCardModel.cardNumber.replaceAllMapped(
                       RegExp(r".{4}"),
                       (match) => "${match.group(0)} ",
                     ),
@@ -90,7 +88,8 @@ class VirtualCardDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            cardHolderName.toUpperCase(),
+                            widget.virtualCardModel.cardholderName
+                                .toUpperCase(),
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -108,7 +107,7 @@ class VirtualCardDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            expiryDate,
+                            widget.virtualCardModel.valid,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: Colors.white,
                             ),
@@ -125,7 +124,7 @@ class VirtualCardDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            cvv,
+                            widget.virtualCardModel.cvv,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: Colors.white,
                             ),
@@ -182,7 +181,7 @@ class VirtualCardDetailScreen extends StatelessWidget {
                         theme,
                         colorScheme,
                         'Card Network',
-                        cardType,
+                        'Visa',
                       ),
                     ],
                   ),

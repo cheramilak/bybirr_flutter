@@ -7,7 +7,7 @@ import 'package:bybirr_flutter/page/auth/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
-  UserModel? userModel = UserModel(
+  UserModel userModel = UserModel(
     firstName: '',
     lastName: '',
     email: '',
@@ -44,7 +44,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  UserModel? get getUser => userModel;
+  UserModel get getUser => userModel;
 
   set setUser(UserModel user) {
     userModel = user;
@@ -52,7 +52,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   set setKyc(KYCModel models) {
-    userModel!.kycModel = models;
+    userModel.kycModel = models;
     notifyListeners();
   }
 

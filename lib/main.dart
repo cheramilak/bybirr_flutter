@@ -8,6 +8,7 @@ import 'package:bybirr_flutter/page/card/order_card_screen.dart';
 import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_provider.dart';
 import 'package:bybirr_flutter/page/dashboard/dashboard_screan.dart';
+import 'package:bybirr_flutter/page/home/providers/home_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_provider.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_screen.dart';
 import 'package:bybirr_flutter/page/splash/introduction_screen.dart';
@@ -83,6 +84,10 @@ class _MyAppState extends State<MyApp> {
           create: (_) {
             return CardProvider();
           },
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, HomeProvider>(
+          create: (_) => HomeProvider(AuthProvider()),
+          update: (_, auth, __) => HomeProvider(auth),
         ),
       ],
       builder: (context, snapshot) {
