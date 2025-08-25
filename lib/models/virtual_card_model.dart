@@ -46,40 +46,34 @@ class BillingAddress {
 }
 
 class VirtualCardModel {
-  final int id;
-  final int userId;
+  final String id;
   final String cardNumber;
   final String cardholderName;
   final String valid; // MM/YY format
   final String cvv;
-  final double balance;
+  final String balance;
   final String status;
-  final DateTime expiryDate;
   final String cardUserId;
   final String customerId;
   final String cardId;
   final BillingAddress? billingAddress;
   final String? last4;
-  final String uuid;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   VirtualCardModel({
     required this.id,
-    required this.userId,
     required this.cardNumber,
     required this.cardholderName,
     required this.valid,
     required this.cvv,
     required this.balance,
     required this.status,
-    required this.expiryDate,
     required this.cardUserId,
     required this.customerId,
     required this.cardId,
     this.billingAddress,
     this.last4,
-    required this.uuid,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -87,27 +81,22 @@ class VirtualCardModel {
   /// Factory: From JSON
   factory VirtualCardModel.fromJson(Map<String, dynamic> json) {
     return VirtualCardModel(
-      id: json['id'],
-      userId: json['user_id'],
-      cardNumber: json['card_number'].toString(),
-      cardholderName: json['cardholder_name'],
+      id: json['id'].toString(),
+      cardNumber: json['cardNumber'] ?? json['card_number'].toString(),
+      cardholderName: json['cardholder_name'] ?? json['cardName'],
       valid: json['valid'],
-      cvv: json['cvv'].toString(),
-      balance: json['balance'] is String
-          ? double.tryParse(json['balance']) ?? 0.0
-          : (json['balance'] as num).toDouble(),
+      cvv: json['cvv'] ?? json['cvv2'],
+      balance: json['balance'].toString(),
       status: json['status'],
-      expiryDate: DateTime.parse(json['expiry_date']),
       cardUserId: json['cardUserId'],
       customerId: json['customerId'],
-      cardId: json['cardId'],
-      billingAddress: json['billing_address'] != null
-          ? BillingAddress.fromJson(json['billing_address'])
+      cardId: json['cardId'] ?? json['id'],
+      billingAddress: json['billingAddress'] != null
+          ? BillingAddress.fromJson(json['billingAddress'])
           : null,
       last4: json['last4'],
-      uuid: json['uuid'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
+      updatedAt: DateTime.parse(json['updated_at'] ?? json['updatedAt']),
     );
   }
 
@@ -115,20 +104,17 @@ class VirtualCardModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
       'card_number': cardNumber,
       'cardholder_name': cardholderName,
       'valid': valid,
       'cvv': cvv,
       'balance': balance,
       'status': status,
-      'expiry_date': expiryDate.toIso8601String(),
       'cardUserId': cardUserId,
       'customerId': customerId,
       'cardId': cardId,
       'billing_address': billingAddress?.toJson(),
       'last4': last4,
-      'uuid': uuid,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -145,9 +131,6 @@ class VirtualCardModel {
       json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
   /// Get formatted expiry date (MM/YY)
-  String get formattedExpiryDate {
-    return '${expiryDate.month.toString().padLeft(2, '0')}/${expiryDate.year.toString().substring(2)}';
-  }
 
   /// Get masked card number
   String get maskedCardNumber {
@@ -162,5 +145,4 @@ class VirtualCardModel {
   bool get isBlocked => status.toLowerCase() == 'blocked';
 
   /// Check if card is expired
-  bool get isExpired => DateTime.now().isAfter(expiryDate);
 }

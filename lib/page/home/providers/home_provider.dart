@@ -14,6 +14,16 @@ class HomeProvider extends ChangeNotifier {
   String get userName => "${user.firstName} ${user.lastName}";
   bool get getIsLoading => isLoading;
 
+  bool get isKYCVerified =>
+      user.kycModel != null && user.kycModel!.status == 'Approved';
+  bool get isKYCFailed =>
+      user.kycModel != null && user.kycModel!.status == 'Failed';
+  bool get isKYCPending =>
+      user.kycModel != null && user.kycModel!.status == 'Pending';
+  bool get isKYCInProgress =>
+      user.kycModel != null && user.kycModel!.status == 'In Progress';
+  bool get isKYCNotStarted => user.kycModel == null;
+
   set setIsLoading(bool value) {
     isLoading = value;
     notifyListeners();

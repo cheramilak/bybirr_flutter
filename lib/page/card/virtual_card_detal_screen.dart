@@ -1,12 +1,16 @@
 import 'package:bybirr_flutter/models/virtual_card_model.dart';
+import 'package:bybirr_flutter/page/card/providers/card_provider.dart';
+import 'package:bybirr_flutter/page/card/widgets/transaction_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/shimmer_loading_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/transaction_detail_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 
 class VirtualCardDetailScreen extends StatefulWidget {
-  final VirtualCardModel virtualCardModel;
-  const VirtualCardDetailScreen({super.key, required this.virtualCardModel});
+  final String cardId;
+  const VirtualCardDetailScreen({super.key, required this.cardId});
 
   @override
   State<VirtualCardDetailScreen> createState() =>
@@ -17,298 +21,290 @@ class _VirtualCardDetailScreenState extends State<VirtualCardDetailScreen> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<CardProvider>(
+        context,
+        listen: false,
+      ).fatchCardDetail(widget.cardId);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
+    final cardProvider = Provider.of<CardProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text("Virtual Card")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // --- Card Preview ---
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [colorScheme.primary, colorScheme.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+      body: cardProvider.getVirtualCardModel == null
+          ? Center(
+              child: LoadingAnimationWidget.fallingDot(
+                color: theme.primaryColor,
+                size: 30,
               ),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      widget.virtualCardModel.cardholderName,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                  // --- Card Preview ---
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        colors: [colorScheme.primary, colorScheme.secondary],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.virtualCardModel.cardNumber.replaceAllMapped(
-                      RegExp(r".{4}"),
-                      (match) => "${match.group(0)} ",
-                    ),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      letterSpacing: 2,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Card Holder",
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                          Text(
-                            widget.virtualCardModel.cardholderName
-                                .toUpperCase(),
-                            style: theme.textTheme.bodyLarge?.copyWith(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            cardProvider.getVirtualCardModel!.cardholderName,
+                            style: theme.textTheme.titleMedium?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Expires",
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                            ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          cardProvider.getVirtualCardModel!.cardNumber
+                              .replaceAllMapped(
+                                RegExp(r".{4}"),
+                                (match) => "${match.group(0)} ",
+                              ),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            widget.virtualCardModel.valid,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "CVV",
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                          Text(
-                            widget.virtualCardModel.cvv,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // --- Balance Info ---
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300, width: 0.8),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Available Balance',
-                        '\$1,200.50',
-                      ),
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Billing Country',
-                        'United States',
-                      ),
-                    ],
-                  ),
-                  5.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Card Currency',
-                        'USD',
-                      ),
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Card Network',
-                        'Visa',
-                      ),
-                    ],
-                  ),
-                  5.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Billing City',
-                        'New York',
-                      ),
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Billing Zip Code',
-                        '10001',
-                      ),
-                    ],
-                  ),
-                  5.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _cardDetailWidget(
-                        theme,
-                        colorScheme,
-                        'Billing Street',
-                        '123 Main St',
-                      ),
-                      _cardDetailWidget(theme, colorScheme, 'Status', 'Active'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 10),
-            // --- Card Actions ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildActionButton(Icons.lock, "Freeze Card", colorScheme),
-                _buildActionButton(Icons.qr_code, "View Details", colorScheme),
-                _buildActionButton(Icons.delete, "Delete", colorScheme),
-                _buildActionButton(Icons.delete, "Delete", colorScheme),
-              ],
-            ),
-            10.height,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Transactions',
-                  style: theme.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            10.height,
-            SizedBox(
-              child: ListView.builder(
-                itemCount: 10,
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return false
-                      ? KycShimmerWidget()
-                      : Container(
-                          margin: EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: colorScheme.surfaceBright,
-                            border: Border.all(width: 0.3),
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(),
-                            title: Text(
-                              'Title',
-                              style: theme.textTheme.bodyLarge,
-                            ),
-                            subtitle: Text(
-                              '20 dec',
-                              style: theme.textTheme.bodySmall,
-                            ),
-                            trailing: Text.rich(
-                              TextSpan(
-                                text: '\$34.34 \n', // default text
-                                style: theme.textTheme.bodyMedium,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: '12:34 pm',
-                                    style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Card Holder",
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white70,
                                   ),
-                                ],
-                              ),
+                                ),
+                                Text(
+                                  cardProvider
+                                      .getVirtualCardModel!
+                                      .cardholderName
+                                      .toUpperCase(),
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ).onTap(() {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20),
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Expires",
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                                Text(
+                                  cardProvider.getVirtualCardModel!.valid,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
-                            builder: (context) {
-                              return const TransactionDetailBottomSheet(
-                                title: "Amazon Purchase",
-                                amount: "\$34.34",
-                                date: "20 Dec 2025",
-                                time: "12:34 PM",
-                                status: "Completed",
-                                referenceId: "TXN123456789",
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "CVV",
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                                Text(
+                                  cardProvider.getVirtualCardModel!.cvv,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // --- Balance Info ---
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Available Balance',
+                              '\$${cardProvider.getVirtualCardModel!.balance}',
+                            ),
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing Country',
+                              '${cardProvider.getVirtualCardModel!.billingAddress?.country}',
+                            ),
+                          ],
+                        ),
+                        5.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing State',
+                              "${cardProvider.getVirtualCardModel!.billingAddress?.state}",
+                            ),
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing City',
+                              "${cardProvider.getVirtualCardModel!.billingAddress?.city}",
+                            ),
+                          ],
+                        ),
+                        5.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing City',
+                              'New York',
+                            ),
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing Zip Code',
+                              "${cardProvider.getVirtualCardModel!.billingAddress?.zipCode}",
+                            ),
+                          ],
+                        ),
+                        5.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Billing Street',
+                              "${cardProvider.getVirtualCardModel!.billingAddress?.street}",
+                            ),
+                            _cardDetailWidget(
+                              theme,
+                              colorScheme,
+                              'Status',
+                              cardProvider.getVirtualCardModel!.status,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+                  // --- Card Actions ---
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildActionButton(
+                        Icons.lock,
+                        "Freeze Card",
+                        colorScheme,
+                      ),
+                      _buildActionButton(
+                        Icons.qr_code,
+                        "View Details",
+                        colorScheme,
+                      ),
+                      _buildActionButton(Icons.delete, "Delete", colorScheme),
+                      _buildActionButton(Icons.delete, "Delete", colorScheme),
+                    ],
+                  ),
+                  10.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Transactions',
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  10.height,
+                  SizedBox(
+                    child: ListView.builder(
+                      itemCount: cardProvider.getLoadingTransactions
+                          ? 10
+                          : cardProvider.getTransactionList.length,
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return cardProvider.getLoadingTransactions
+                            ? KycShimmerWidget()
+                            : TransactionWidget(
+                                transaction:
+                                    cardProvider.getTransactionList[index],
                               );
-                            },
-                          );
-                        });
-                },
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

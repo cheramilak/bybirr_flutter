@@ -73,7 +73,7 @@ class CardWidget extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => VirtualCardDetailScreen(virtualCardModel: cardModel),
+          builder: (_) => VirtualCardDetailScreen(cardId: cardModel.cardId),
         ),
       );
     });

@@ -5,6 +5,7 @@ import 'package:bybirr_flutter/page/home/widgets/card_list_bootomsheet.dart';
 import 'package:bybirr_flutter/page/home/widgets/card_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/shimmer_loading_widget.dart';
 import 'package:bybirr_flutter/page/home/widgets/transaction_detail_bottom_sheet.dart';
+import 'package:bybirr_flutter/page/home/widgets/virification_dilaog.dart';
 import 'package:bybirr_flutter/page/kyc/kyc_screen.dart';
 import 'package:bybirr_flutter/page/kyc/widgets/kyc_conformation.dart';
 import 'package:bybirr_flutter/providers/theme_provider.dart';
@@ -85,7 +86,7 @@ class _HomeScreanState extends State<HomeScrean> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             CircleAvatar(
-                              child: true
+                              child: homeProvider.isKYCVerified
                                   ? Icon(
                                       Icons.verified_outlined,
                                       color: greenColor,
@@ -103,50 +104,67 @@ class _HomeScreanState extends State<HomeScrean> {
                                   'Complete your verfication',
                                   style: theme.textTheme.bodySmall,
                                 ),
-                                if (authProvider.userModel!.kycModel != null)
-                                  authProvider.userModel!.kycModel!.status ==
-                                          'Approved'
-                                      ? Row(
-                                          children: [
-                                            Icon(
-                                              Icons.verified,
-                                              color: greenColor,
-                                              size: 15,
+                                homeProvider.isKYCVerified
+                                    ? Row(
+                                        children: [
+                                          Icon(
+                                            Icons.verified,
+                                            color: greenColor,
+                                            size: 15,
+                                          ),
+                                          8.width,
+                                          Text(
+                                            "verfied",
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(color: greenColor),
+                                          ),
+                                        ],
+                                      )
+                                    : Text(
+                                        "${homeProvider.isKYCPending
+                                            ? 'Pending'
+                                            : homeProvider.isKYCFailed
+                                            ? 'Failed ,${authProvider.userModel.kycModel!.reason ?? ''}'
+                                            : 'Not Started'}",
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: homeProvider.isKYCFailed
+                                                  ? colorScheme.error
+                                                  : colorScheme.primary,
                                             ),
-                                            8.width,
-                                            Text(
-                                              "verfied",
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(color: greenColor),
-                                            ),
-                                          ],
-                                        )
-                                      : Text(
-                                          "${authProvider.userModel!.kycModel!.status},${authProvider.userModel!.kycModel!.reason ?? ''}",
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                                color: colorScheme.error,
-                                              ),
-                                        ),
+                                      ),
                               ],
                             ),
                           ],
                         ),
                       ).onTap(() {
-                        if (authProvider.getUser!.kycModel != null &&
-                            authProvider.getUser!.kycModel!.status ==
-                                'Pending') {
+                        if (homeProvider.isKYCNotStarted) {
                           return showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (context) {
-                              return KycConformationDialog();
+                              return VirificationStartDilaog();
                             },
                           );
                         }
-                        if (authProvider.getUser!.kycModel!.status ==
-                            'Failed') {
-                          KycScreen().launch(context);
+                        if (homeProvider.isKYCFailed) {
+                          return KycScreen().launch(context);
+                        } else if (homeProvider.isKYCPending) {
+                          return showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return VirificationPendingDilaog();
+                            },
+                          );
+                        } else if (homeProvider.isKYCFailed) {
+                          return showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return VirificationFailDilaog();
+                            },
+                          );
                         }
                       }),
                 10.height,
@@ -294,27 +312,7 @@ class _HomeScreanState extends State<HomeScrean> {
                                   ),
                                 ),
                               ),
-                            ).onTap(() {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20),
-                                  ),
-                                ),
-                                builder: (context) {
-                                  return const TransactionDetailBottomSheet(
-                                    title: "Amazon Purchase",
-                                    amount: "\$34.34",
-                                    date: "20 Dec 2025",
-                                    time: "12:34 PM",
-                                    status: "Completed",
-                                    referenceId: "TXN123456789",
-                                  );
-                                },
-                              );
-                            });
+                            );
                     },
                   ),
                 ),

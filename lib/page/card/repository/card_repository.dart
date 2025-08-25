@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bybirr_flutter/core/dio_config.dart';
 import 'package:bybirr_flutter/core/endpoint.dart';
+import 'package:bybirr_flutter/models/transaction_model.dart';
 import 'package:bybirr_flutter/models/virtual_card_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -69,6 +70,45 @@ class CardRepository {
       }
       return Left(errorMessage);
     } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, VirtualCardModel>> fatchCardDetail(
+    String cardId,
+  ) async {
+    try {
+      var res = await _dioClient.get('${endpoint}card/getCardDetails/$cardId');
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        print(data);
+        return Right(VirtualCardModel.fromJson(data));
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      print(e.toString());
+      return Left(e.toString());
+    }
+  }
+
+  Future<Either<String, List<TransactionModel>>> fatchTransactions(
+    String cardId,
+  ) async {
+    try {
+      var res = await _dioClient.get(
+        '${endpoint}card/getCardTransactions/$cardId',
+      );
+      if (res.statusCode == 200) {
+        var data = res.data['data'];
+        var list = data['cardTransactions'] as List;
+        List<TransactionModel> transactions = list
+            .map((e) => TransactionModel.fromJson(e))
+            .toList();
+        return Right(transactions);
+      }
+      return Left(errorMessage);
+    } catch (e) {
+      print(e.toString());
       return Left(e.toString());
     }
   }

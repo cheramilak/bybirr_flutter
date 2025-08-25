@@ -1,22 +1,11 @@
+import 'package:bybirr_flutter/models/transaction_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionDetailBottomSheet extends StatelessWidget {
-  final String title;
-  final String amount;
-  final String date;
-  final String time;
-  final String status;
-  final String referenceId;
+  final TransactionModel transaction;
 
-  const TransactionDetailBottomSheet({
-    super.key,
-    required this.title,
-    required this.amount,
-    required this.date,
-    required this.time,
-    required this.status,
-    required this.referenceId,
-  });
+  const TransactionDetailBottomSheet({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +41,24 @@ class TransactionDetailBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          _buildDetailRow("Title", title, theme),
-          _buildDetailRow("Amount", amount, theme),
-          _buildDetailRow("Date", date, theme),
-          _buildDetailRow("Time", time, theme),
-          _buildDetailRow("Status", status, theme),
-          _buildDetailRow("Reference ID", referenceId, theme),
+          _buildDetailRow("Narrative", transaction.narrative ?? '', theme),
+          _buildDetailRow("Type", transaction.type ?? '', theme),
+          _buildDetailRow("Method", transaction.method ?? '', theme),
+          _buildDetailRow("Amount", '\$${transaction.amount}', theme),
+          _buildDetailRow(
+            "Date",
+            DateFormat(
+              'dd MMM yyyy HH:mm',
+            ).format(DateTime.parse(transaction.createdAt.toString())),
+            theme,
+          ),
+          _buildDetailRow(
+            "Status",
+            transaction.isSuccessful ? 'Successful' : 'Failed',
+            theme,
+          ),
+
+          _buildDetailRow("Reference ID", transaction.reference ?? '', theme),
 
           const SizedBox(height: 20),
           ElevatedButton(

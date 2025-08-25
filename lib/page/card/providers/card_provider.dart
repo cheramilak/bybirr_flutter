@@ -4,20 +4,26 @@ import 'package:bybirr_flutter/core/exception_message.dart';
 import 'package:bybirr_flutter/models/bank_model.dart';
 import 'package:bybirr_flutter/models/rate_model.dart';
 import 'package:bybirr_flutter/models/virtual_card_model.dart';
+import 'package:bybirr_flutter/models/transaction_model.dart';
 import 'package:bybirr_flutter/page/card/repository/card_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CardProvider extends ChangeNotifier {
   CardRepository _repository = CardRepository();
+  VirtualCardModel? virtualCardModel;
   RateModel? rateModel;
   int selectBankIndex = -1;
   List<BankModel> bankList = [];
   List<VirtualCardModel> virtualCardList = [];
+  List<TransactionModel> transactionList = [];
+
+  VirtualCardModel? get getVirtualCardModel => virtualCardModel;
 
   List<VirtualCardModel> get getCards => virtualCardList;
 
   bool isLoadingPayment = false;
+  bool isLoadingTransactions = false;
   bool get getLoadingPayment => isLoadingPayment;
   bool isLoadingCards = false;
   bool isVissableBalance = false;
@@ -26,7 +32,8 @@ class CardProvider extends ChangeNotifier {
   List<BankModel> get getBankList => bankList;
   File? screenshoot;
   File? get getScreenshoot => screenshoot;
-
+  bool get getLoadingTransactions => isLoadingTransactions;
+  List<TransactionModel> get getTransactionList => transactionList;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> pickScreensoot() async {
@@ -45,6 +52,16 @@ class CardProvider extends ChangeNotifier {
 
   set setLoadingPayment(bool value) {
     isLoadingPayment = value;
+    notifyListeners();
+  }
+
+  set setLoadingTransactions(bool value) {
+    isLoadingTransactions = value;
+    notifyListeners();
+  }
+
+  set setTransactionList(List<TransactionModel> value) {
+    transactionList = value;
     notifyListeners();
   }
 
@@ -75,6 +92,11 @@ class CardProvider extends ChangeNotifier {
 
   set setcardList(List<VirtualCardModel> value) {
     virtualCardList = value;
+    notifyListeners();
+  }
+
+  set setVirtualCardModel(VirtualCardModel? value) {
+    virtualCardModel = value;
     notifyListeners();
   }
 
@@ -148,6 +170,49 @@ class CardProvider extends ChangeNotifier {
       showErrorMessage(null, e.toString());
       setLoadingPayment = false;
       return false;
+    }
+  }
+
+  Future<void> fatchCardDetail(String cardId) async {
+    try {
+      // if (getVirtualCardModel != null) {
+      //   if (getVirtualCardModel!.id == cardId) {
+      //     return;
+      //   }
+      // }
+      setVirtualCardModel = null;
+      var res = await _repository.fatchCardDetail(cardId);
+      res.fold(
+        (l) {
+          showErrorMessage(null, l);
+        },
+        (r) {
+          setVirtualCardModel = r;
+          fatchTransactions(cardId);
+        },
+      );
+    } catch (e) {
+      showErrorMessage(null, e.toString());
+    }
+  }
+
+  Future<void> fatchTransactions(String cardId) async {
+    try {
+      setLoadingTransactions = true;
+      var res = await _repository.fatchTransactions(cardId);
+      res.fold(
+        (l) {
+          setLoadingTransactions = false;
+          showErrorMessage(null, l);
+        },
+        (r) {
+          setLoadingTransactions = false;
+          setTransactionList = r;
+        },
+      );
+    } catch (e) {
+      setLoadingTransactions = false;
+      showErrorMessage(null, e.toString());
     }
   }
 }
